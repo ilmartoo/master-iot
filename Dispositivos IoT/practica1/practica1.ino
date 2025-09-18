@@ -85,20 +85,42 @@ void loop() {
  **************************************/
 
 #define LED_PIN D13
-#define INPUT_PIN 5
+#define INPUT_PIN A1
+#define ON_PIN D2
+#define OFF_PIN D3
 
 #define RESOLUTION 10
+
+uint16_t rawValue;
+bool isOn = false;
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(INPUT_PIN, INPUT);
+  pinMode(ON_PIN, INPUT);
+  pinMode(OFF_PIN, INPUT);
   analogReadResolution(RESOLUTION);
+  Serial.begin(9600);
 }
 
 void loop() {
-  uint16_t voltage = analogRead(INPUT_PIN);
-  Serial.print("Voltage = ");
-  Serial.println(voltage);
+  rawValue = analogRead(INPUT_PIN);
+  Serial.print("LDR value = ");
+  Serial.println(rawValue);
+
+  if (digitalRead(ON_PIN)) {
+    isOn = true;
+  }
+  if (digitalRead(OFF_PIN)) {
+    isOn = false;
+  }
+
+  if (isOn && rawValue > 512) {
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+
   delay(250);
 }
 
